@@ -39,17 +39,21 @@ plot_map_avg_tuition <- function(map_data, props) {
   p <- ggplot(data = map_data, mapping=params)
   p + geom_polygon(color = "gray90", size = 0.1) +
     coord_map(projection="albers", lat0 = 39, lat1 = 45) +
-    labs(title = props$title) + theme_map() + labs(fill=props$legend_title) 
+    labs(title = props$title) + theme_map() + labs(fill=props$legend_title) +
+    scale_fill_gradient(low = "white", high = "#CB454A")
 }
 
 # TODO: this does not contains all state in the dataset as `state.name` array does not contain 
 # US territories such as Puerto rico or America Samoa 
 # I was surprise that Hawaii and Alaska are not even included
-map_data <- tuesdata$tuition_cost %>% mutate(region=tolower(state.name[match(state_code, state.abb)])) %>%
+map_data_in_state_avg <- tuesdata$tuition_cost %>% mutate(region=tolower(state.name[match(state_code, state.abb)])) %>%
   group_by(region) %>% summarise(average_in_state_tuition = mean(in_state_tuition)) %>% dplyr::inner_join(us_states) 
 
-plot_map_avg_tuition(map_data, list(title="Average in state tuition in the US", legend_title="Avg", fill="average_in_state_tuition"))
-  
+map_data_out_state_avg <- tuesdata$tuition_cost %>% mutate(region=tolower(state.name[match(state_code, state.abb)])) %>%
+  group_by(region) %>% summarise(average_out_state_tuition = mean(out_of_state_tuition)) %>% dplyr::inner_join(us_states) 
+
+plot_map_avg_tuition(map_data_in_state_avg, list(title="Average in state tuition in the US", legend_title="Avg", fill="average_in_state_tuition"))
+plot_map_avg_tuition(map_data_out_state_avg, list(title="Average out of state tuition in the US", legend_title="Avg", fill="average_out_state_tuition"))
 
     
                       
