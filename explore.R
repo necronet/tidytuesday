@@ -43,6 +43,8 @@ plot_map_avg_tuition <- function(map_data, props) {
     scale_fill_gradient(low = "white", high = "#CB454A")
 }
 
+
+
 # TODO: this does not contains all state in the dataset as `state.name` array does not contain 
 # US territories such as Puerto rico or America Samoa 
 # I was surprise that Hawaii and Alaska are not even included
@@ -55,7 +57,7 @@ map_data_out_state_avg <- tuesdata$tuition_cost %>% mutate(region=tolower(state.
 plot_map_avg_tuition(map_data_in_state_avg, list(title="Average in state tuition in the US", legend_title="Avg", fill="average_in_state_tuition"))
 plot_map_avg_tuition(map_data_out_state_avg, list(title="Average out of state tuition in the US", legend_title="Avg", fill="average_out_state_tuition"))
 
-    
+
                       
   
 
