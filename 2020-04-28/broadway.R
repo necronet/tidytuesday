@@ -15,9 +15,11 @@ synopses <- tuesdata$synopses
 cpi <- tuesdata$cpi
 pre_1985_starts <- tuesdata$`pre-1985-starts`
 
-grosses %>% arrange(-weekly_gross) %>% select(show) %>% unique
 
-grosses %>% dplyr::filter(show %in% c('Hamilton', 'The Lion King')) %>% 
+
+shows <- grosses %>% arrange(-weekly_gross) %>% select(show) %>% unique %>% head(8) %>% pull
+
+grosses %>% dplyr::filter(show %in% shows) %>% 
             rename(date = week_ending) %>% 
             cross_by_periods(c("month","quarter")) %>%
             summarise(gross = sum(weekly_gross), avg_gross=mean(avg_ticket_price)) %>%
@@ -49,8 +51,19 @@ grosses %>% dplyr::filter(show %in% c('Hamilton', 'The Lion King')) %>%
     scale_y_continuous(labels = scales::percent_format()) +
     geom_line(size =.5, alpha = .6) 
 
-
   
+  
+  grosses %>% dplyr::filter(show %in% shows) %>% 
+    rename(date = week_ending) %>% 
+    cross_by_dimensions(show) %>%
+    cross_by_periods(c("month","quarter")) %>%
+    filter(period == "quarter", show != 'All') %>%
+    summarise(gross = sum(weekly_gross), avg_gross=mean(avg_ticket_price)) %>%
+    ggplot(aes(date, gross, fill = show)) +
+    scale_y_continuous(labels = scales::dollar) +
+    geom_col() + expand_limits(y = 0) 
+  
+
    
 
 
